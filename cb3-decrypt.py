@@ -5,7 +5,6 @@ def xor(data):
     key = result[0] ^ 0x55
     if not key == result[1] ^ 0x6e:
         print("解密错误!")
-        return
     for i in range(0, len(result)):
         result[i] ^= key
     return bytes(result)
