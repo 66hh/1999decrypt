@@ -1,4 +1,5 @@
 import os
+import multiprocessing
 
 def xor(data):
     result = bytearray(data)
@@ -9,11 +10,19 @@ def xor(data):
         result[i] ^= key
     return bytes(result)
 
-def decrypt(path):
+def decrypt(file):
+    print(file)
+    path = "bundles/" + file
     data = open(path,'rb').read()
-    with open(path + "-dec", "wb") as f:
+    with open("bundles-decrypt/" + file, "wb") as f:
         f.write(xor(data))
 
-for file in os.listdir("bundles"):
-    print(file)
-    decrypt("bundles\\" + file)
+if __name__ == "__main__":
+    if not os.path.isdir("bundles"):
+        print("copy bundle folders here")
+    if not os.path.isdir("bundles-decrypt"):
+        os.mkdir("bundles-decrypt")
+    pool = multiprocessing.Pool()
+    pool.map(decrypt, os.listdir("bundles"))
+    pool.close()
+    pool.join()
