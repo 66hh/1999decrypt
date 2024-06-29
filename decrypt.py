@@ -1,4 +1,5 @@
 import os
+import multiprocessing
 
 def xorhead(data):
     result = bytearray(data)
@@ -14,11 +15,21 @@ def xordata(data):
             return bytes(result)
     return bytes(result)
 
-def decrypt(path):
+def decrypt(file):
+    print(file)
+    path = "bundles/" + file
     data = open(path,'rb').read()
-    with open(path + "-dec", "wb") as f:
+    with open("bundles-decrypt/" + file, "wb") as f:
         f.write(xordata(xorhead(data)))
 
-for file in os.listdir("bundles"):
-    print(file)
-    decrypt("bundles\\" + file)
+if __name__ == "__main__":
+    if not os.path.isdir("bundles"):
+        print("copy bundle folders here")
+    if not os.path.isdir("bundles-decrypt"):
+        os.mkdir("bundles-decrypt")
+
+    os.system("mkdir -p bundles-decrypt")
+    pool = multiprocessing.Pool()
+    pool.map(decrypt, os.listdir("bundles"))
+    pool.close()
+    pool.join()
